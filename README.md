@@ -23,7 +23,7 @@ Or install it yourself as:
 ## Getting started
 
 
-#### 1. Generate models
+### 1. Generate models
 
 Once you've installed the gem, you will need to set it up within your application. To do this, simply run
 
@@ -44,7 +44,7 @@ Once this has finished, your app will have 4 new models:
 
 There is one migration per model above that will also be generated.
 
-#### 2. Run migrations (ActiveRecord only)
+### 2. Run migrations (ActiveRecord only)
 
 Once you've setup RolyPoly, you simply need to run the migrations
 
