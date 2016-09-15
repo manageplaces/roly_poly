@@ -20,9 +20,48 @@ Or install it yourself as:
 
     $ gem install roly_poly
 
-## Usage
+## Getting started
 
-TODO: Write usage instructions here
+
+#### 1. Generate models
+
+Once you've installed the gem, you will need to set it up within your application. To do this, simply run
+
+    $ rails g roly_poly
+
+*Note* this assumes you're happy to use the default model names, and that your existing application has a model called User.
+All of these are configurable however. The full command which allows these to be changed is
+
+    $ rails g roly_poly [RoleClass] [PermissionClass] [UserClass]
+
+
+Once this has finished, your app will have 4 new models:
+
+- Role
+- Permission
+- RolePermission
+- UserRole
+
+There is one migration per model above that will also be generated.
+
+#### 2. Run migrations (ActiveRecord only)
+
+Once you've setup RolyPoly, you simply need to run the migrations
+
+    $ rake db:migrate
+
+And that's it. RolyPoly is now installed into your app. You can now start setting it up.
+
+*Please note* Whilst this step is only required if you're using ActiveRecord, RolyPoly does not currently support
+mongoid. This is in the list of Todo's, however anyone willing to contribute to this effort is more than welcome.
+
+
+#### 3. More to come
+
+This documentation is incomplete, just like the gem itself. Stay tuned for more info.
+
+
+
 
 ## Development
 
@@ -38,4 +77,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
