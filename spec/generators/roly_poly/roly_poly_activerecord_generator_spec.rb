@@ -39,6 +39,9 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
 
       it { should exist }
       it { should contain 'RolyPoly.configure do |config|'}
+      it { should contain "# config.role_class_name = 'Role'" }
+      it { should contain "# config.user_class_name = 'User'" }
+      it { should contain "# config.permission_class_name = 'Permission'" }
     end
 
     describe 'app/models/user.rb' do
@@ -55,6 +58,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "has_many :role_permissions" }
       it { should contain "has_many :permissions, through: :role_permissions" }
       it { should contain "belongs_to :resource, polymorphic: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
       it { should contain "validates :name, presence: true" }
     end
@@ -89,6 +93,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :user" }
       it { should contain "belongs_to :role" }
       it { should contain "belongs_to :resource, polymorphic: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates [:user, :role], presence: true" }
       it { should contain "validates :user_id, uniqueness: { scope: [:role_id, :resource_type, :resource_id] }"}
     end
@@ -145,6 +150,16 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       run_generator
     }
 
+    describe 'config/initializers/roly_poly.rb' do
+      subject { file('config/initializers/roly_poly.rb') }
+
+      it { should exist }
+      it { should contain 'RolyPoly.configure do |config|'}
+      it { should contain "config.role_class_name = 'NewRole'" }
+      it { should contain "# config.user_class_name = 'User'" }
+      it { should contain "# config.permission_class_name = 'Permission'" }
+    end
+
     describe 'app/models/new_role.rb' do
       subject { file('app/models/new_role.rb') }
 
@@ -153,6 +168,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "has_many :new_role_permissions" }
       it { should contain "has_many :permissions, through: :new_role_permissions" }
       it { should contain "belongs_to :resource, polymorphic: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
       it { should contain "validates :name, presence: true" }
     end
@@ -187,6 +203,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :user" }
       it { should contain "belongs_to :new_role" }
       it { should contain "belongs_to :resource, polymorphic: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates [:user, :new_role], presence: true" }
       it { should contain "validates :user_id, uniqueness: { scope: [:new_role_id, :resource_type, :resource_id] }"}
     end
@@ -232,6 +249,16 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       run_generator
     }
 
+    describe 'config/initializers/roly_poly.rb' do
+      subject { file('config/initializers/roly_poly.rb') }
+
+      it { should exist }
+      it { should contain 'RolyPoly.configure do |config|'}
+      it { should contain "# config.role_class_name = 'Role'" }
+      it { should contain "# config.user_class_name = 'User'" }
+      it { should contain "config.permission_class_name = 'NewPermission'" }
+    end
+
     describe 'app/models/role.rb' do
       subject { file('app/models/role.rb') }
 
@@ -240,6 +267,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "has_many :role_new_permissions" }
       it { should contain "has_many :new_permissions, through: :role_new_permissions" }
       it { should contain "belongs_to :resource, polymorphic: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
       it { should contain "validates :name, presence: true" }
     end
@@ -297,6 +325,16 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       run_generator
     }
 
+    describe 'config/initializers/roly_poly.rb' do
+      subject { file('config/initializers/roly_poly.rb') }
+
+      it { should exist }
+      it { should contain 'RolyPoly.configure do |config|'}
+      it { should contain "# config.role_class_name = 'Role'" }
+      it { should contain "config.user_class_name = 'AdminUser'" }
+      it { should contain "# config.permission_class_name = 'Permission'" }
+    end
+
     describe 'app/models/admin_user.rb' do
       subject { file('app/models/admin_user.rb') }
 
@@ -311,6 +349,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :admin_user" }
       it { should contain "belongs_to :role" }
       it { should contain "belongs_to :resource, polymorphic: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates [:admin_user, :role], presence: true" }
       it { should contain "validates :admin_user_id, uniqueness: { scope: [:role_id, :resource_type, :resource_id] }"}
     end

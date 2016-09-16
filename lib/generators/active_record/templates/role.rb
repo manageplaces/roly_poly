@@ -5,6 +5,7 @@ class <%= role_class_name %> < ActiveRecord::Base
 
   belongs_to :resource, polymorphic: true
 
+  validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }
   validates :name, presence: true
   validates :name, uniqueness: { scope: [:resource_type, :resource_id] }
 
