@@ -11,7 +11,6 @@ module RolyPoly
       argument :user_class, type: :string, default: 'User'
 
       namespace :roly_poly
-      # hook_for :orm, required: true
       hook_for(:orm, required: true) do |invoked|
         invoke invoked, [ role_class, permission_class, user_class ]
       end
