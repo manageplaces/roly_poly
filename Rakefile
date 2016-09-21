@@ -28,3 +28,15 @@ task 'spec' do
   return_code2 = $?.exitstatus
   fail if return_code1 != 0 || return_code2 != 0
 end
+
+task 'spec:generators' do
+  Rake::Task['generators'].invoke
+  return_code = $?.exitstatus
+  fail if return_code != 0
+end
+
+task 'spec:roly_poly' do
+  Rake::Task['roly_poly'].invoke
+  return_code = $?.exitstatus
+  fail if return_code != 0
+end

@@ -42,6 +42,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "# config.role_class_name = 'Role'" }
       it { should contain "# config.user_class_name = 'User'" }
       it { should contain "# config.permission_class_name = 'Permission'" }
+      it { should contain "# config.role_exclusivity = :one_per_resource" }
+      it { should contain "# config.role_exclusivity_error = :raise" }
     end
 
     describe 'app/models/user.rb' do

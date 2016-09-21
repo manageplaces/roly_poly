@@ -33,3 +33,16 @@ class UserRole < ActiveRecord::Base
   belongs_to :role
   belongs_to :resource, polymorphic: true
 end
+
+
+class Resource < ActiveRecord::Base
+  role_resource
+end
+
+class Forum < ActiveRecord::Base
+  role_resource
+end
+
+class Group < ActiveRecord::Base
+  role_resource
+end
