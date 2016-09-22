@@ -46,11 +46,16 @@ module RolyPoly
 
 
     def has_permission?(permission_name, resource = nil)
+      self.adapter.has_permission?(self, permission_name, resource)
     end
 
 
 
 
+    #
+    # Removes the specified role scoped to the specified
+    # resource if it exists.
+    #
     def remove_role(role_name, resource = nil)
       role = self.adapter.find_role_by_name(role_name.to_s)
       unless role.nil?

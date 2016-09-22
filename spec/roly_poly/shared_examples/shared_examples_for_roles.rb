@@ -3,6 +3,7 @@ require 'roly_poly/shared_examples/shared_examples_for_finders'
 require 'roly_poly/shared_examples/grants/shared_examples_for_add_roles'
 require 'roly_poly/shared_examples/grants/shared_examples_for_remove_roles'
 require 'roly_poly/shared_examples/grants/shared_examples_for_has_role'
+require 'roly_poly/shared_examples/grants/shared_examples_for_has_permission'
 
 shared_examples_for RolyPoly::HasRoles do
   let(:mappings) { RolyPoly.class_mappings }
@@ -51,8 +52,9 @@ shared_examples_for RolyPoly::HasRoles do
       it_should_behave_like '#has_role?_examples', 'Symbol', :to_sym
     end
 
-    # describe '#has_permission?' do
-    #   it_should_behave_like '#has_permission?_examples'
-    # end
+    describe '#has_permission?' do
+      it_should_behave_like '#has_permission?_examples', 'String', :to_s
+      it_should_behave_like '#has_permission?_examples', 'Symbol', :to_sym
+    end
   end
 end

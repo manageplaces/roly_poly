@@ -27,8 +27,13 @@ def load_data
   RolyPoly.class_mappings[:role][:klass].create(name: 'moderator')
   RolyPoly.class_mappings[:role][:klass].create(name: 'manager')
   RolyPoly.class_mappings[:role][:klass].create(name: 'superhero')
+  RolyPoly.class_mappings[:role][:klass].create(name: 'supervillain')
   RolyPoly.class_mappings[:role][:klass].create(name: 'god')
   RolyPoly.class_mappings[:role][:klass].create(name: 'teammember')
+
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'create_user')
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'update_user')
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'view_user')
 
   Forum.create(name: 'forum 1')
   Forum.create(name: 'forum 2')

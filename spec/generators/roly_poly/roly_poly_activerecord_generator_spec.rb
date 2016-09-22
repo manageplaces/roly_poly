@@ -59,6 +59,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class Role < ActiveRecord::Base" }
       it { should contain "has_many :role_permissions" }
       it { should contain "has_many :permissions, through: :role_permissions" }
+      it { should contain "has_many :user_roles" }
+      it { should contain "has_many :users, through: :user_roles" }
       it { should contain "belongs_to :resource, polymorphic: true" }
       it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
@@ -169,6 +171,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class NewRole < ActiveRecord::Base" }
       it { should contain "has_many :new_role_permissions" }
       it { should contain "has_many :permissions, through: :new_role_permissions" }
+      it { should contain "has_many :user_new_roles" }
+      it { should contain "has_many :users, through: :user_new_roles" }
       it { should contain "belongs_to :resource, polymorphic: true" }
       it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }

@@ -104,6 +104,10 @@ module ActiveRecord
         "#{user_class.underscore.downcase.singularize}_#{roles_association_name}"
       end
 
+      def users_association_name
+        user_class.underscore.pluralize
+      end
+
 
       # ################## #
       # TABLE NAME METHODS #

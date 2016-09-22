@@ -51,6 +51,7 @@ shared_context 'instance scoped role', scope: :unrestricted do
   before(:all) do
     RolyPoly.role_exclusivity = :unrestricted
     load_roles
+    assign_permissions
   end
 
   def load_roles
@@ -62,5 +63,16 @@ shared_context 'instance scoped role', scope: :unrestricted do
     manager.add_role(:manager, Group.first)
     manager.add_role(:moderator, Forum.first)
     manager.add_role(:moderator, Group.first)
+  end
+
+  def assign_permissions
+    manager_role = RolyPoly.class_mappings[:role][:klass].find_by_name('manager')
+    superhero_role = RolyPoly.class_mappings[:role][:klass].find_by_name('superhero')
+    god_role = RolyPoly.class_mappings[:role][:klass].find_by_name('god')
+    moderator_role = RolyPoly.class_mappings[:role][:klass].find_by_name('moderator')
+
+    superhero_role.add_permission(:update_user)
+    god_role.add_permission(:view_user)
+    moderator_role.add_permission(:create_user)
   end
 end

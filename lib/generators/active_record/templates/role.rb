@@ -3,6 +3,9 @@ class <%= role_class_name %> < ActiveRecord::Base
   has_many :<%= role_permissions_association_name %>
   has_many :<%= permissions_association_name %>, through: :<%= role_permissions_association_name %>
 
+  has_many :<%= user_roles_association_name %>
+  has_many :<%= users_association_name %>, through: :<%= user_roles_association_name %>
+
   belongs_to :resource, polymorphic: true
 
   validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }

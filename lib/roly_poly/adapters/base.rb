@@ -27,9 +27,16 @@ module RolyPoly
         raise NotImplementedError.new("You must implemented remove_role")
       end
 
-
       def replace_role(user, role)
         raise NotImplementedError.new("You must implemented replace_role")
+      end
+
+      def roles(user, resource = nil)
+        raise NotImplementedError.new("You must implement roles")
+      end
+
+      def has_permission?(user, permission, resource = nil)
+        raise NotImplementedError.new("You must implement has_permission?")
       end
 
       def where(relation, *args)
@@ -42,6 +49,22 @@ module RolyPoly
     end
 
     class ResourceAdapterBase
+    end
+
+    class PermissionAdapterBase
+
+      def add_permission(role, name)
+        raise NotImplementedError.new("You must implement add")
+      end
+
+      def remove_permission(role, name)
+        raise NotImplementedError.new("You must implement remove")
+      end
+
+      def has_permission?(role, name)
+        raise NotImplementedError.new("You must implement has_permission?")
+      end
+
     end
 
   end
