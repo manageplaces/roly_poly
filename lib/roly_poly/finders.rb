@@ -5,7 +5,7 @@ module RolyPoly
     class_methods do
 
       def with_role(role, resource = nil)
-        self.adapter.with_role(this, role, resource)
+        self.adapter.role_scope(self, { name: role, resource: resource })
       end
 
       def with_all_roles(*args)

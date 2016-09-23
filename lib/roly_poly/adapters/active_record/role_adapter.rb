@@ -116,8 +116,13 @@ module RolyPoly
 
       def where(relation, *args)
         conditions, values = build_query_scope(args)
-        relation.joins(mappings[:role][:relation_name]).where(conditions, *values)
+        relation.where(conditions, *values)
       end
+
+      def role_scope(relation, *args)
+        where(relation.joins(mappings[:role][:plural_relation_name]), *args)
+      end
+
 
       def with_role(klass, role_name, resource = nil)
         query_scope(klass).

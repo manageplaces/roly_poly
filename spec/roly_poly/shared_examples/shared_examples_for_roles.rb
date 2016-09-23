@@ -57,4 +57,10 @@ shared_examples_for RolyPoly::HasRoles do
       it_should_behave_like '#has_permission?_examples', 'Symbol', :to_sym
     end
   end
+
+
+  context 'user model class', scope: :class do
+    it_should_behave_like :finders, 'String', :to_s
+    it_should_behave_like :finders, 'Symbol', :to_sym
+  end
 end

@@ -47,6 +47,17 @@ def load_data
   RolyPoly.class_mappings[:user][:klass].create(name: 'manager')
 end
 
+def provision_user(user, roles)
+  roles.each do |role|
+    if role.is_a? Array
+      user.add_role *role
+    else
+      user.add_role role
+    end
+  end
+  user
+end
+
 RSpec.configure do |config|
   config.expect_with(:rspec) { |c| c.syntax = [:should, :expect] }
 

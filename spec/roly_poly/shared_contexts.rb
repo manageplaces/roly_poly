@@ -76,3 +76,20 @@ shared_context 'instance scoped role', scope: :unrestricted do
     moderator_role.add_permission(:create_user)
   end
 end
+
+
+shared_context 'class', scope: :class do
+  subject { user_class }
+
+  before(:all) {
+    RolyPoly.class_mappings[:user_role][:klass].destroy_all
+  }
+
+  def user_class
+    RolyPoly.class_mappings[:user][:klass]
+  end
+
+  let!(:admin) { provision_user(user_class.find_by_name('admin'), [ :admin, [ :moderator, Group ], [ :moderator, Forum ], [ :manager, Forum.first ], [ :teammember, Forum.last ] ]) }
+  let!(:moderator) { provision_user(user_class.find_by_name('moderator'), [ [ :moderator, Forum ], [ :manager, Group ], [ :moderator, Group.last ] ]) }
+  let!(:manager) { provision_user(user_class.find_by_name('manager'), [[ :moderator, Forum.first ]])}
+end

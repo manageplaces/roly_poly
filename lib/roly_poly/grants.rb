@@ -40,7 +40,7 @@ module RolyPoly
     # This method also has the alias `is_assigned_role?`
     #
     def has_role?(role_name, resource = nil)
-      self.adapter.where(self.send(RolyPoly.class_mappings[:user_role][:plural_relation_name]), name: role_name, resource: resource).any?
+      self.adapter.role_scope(self.class.where(id: self.id), name: role_name, resource: resource).any?
     end
     alias_method :is_assigned_role?, :has_role?
 
