@@ -1,5 +1,6 @@
 require 'roly_poly/version'
 require 'roly_poly/configuration'
+require 'roly_poly/railtie' if defined?(Rails)
 require 'roly_poly/has_roles'
 require 'roly_poly/role_resource'
 require 'roly_poly/permissions'
