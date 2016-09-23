@@ -2,7 +2,7 @@ ActiveRecord::Schema.define do
 
   self.verbose = false
 
-  [ :users, :resources, :forums, :groups ].each do |table|
+  [ :users, :resources, :forums, :groups, :companies ].each do |table|
     create_table(table) do |t|
       t.string :name
     end

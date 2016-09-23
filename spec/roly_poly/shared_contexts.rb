@@ -63,7 +63,18 @@ shared_context 'instance scoped role', scope: :unrestricted do
     manager.add_role(:manager, Group.first)
     manager.add_role(:moderator, Forum.first)
     manager.add_role(:moderator, Group.first)
+
+    manager.add_role({ name: :company_superhero, resource: Company.first })
+    manager.add_role({ name: :company_manager, resource: Company.first })
+    manager.add_role({ name: :company_god, resource: Company.first }, Group)
+    manager.add_role({ name: :company_manager, resource: Company.first }, Group)
+    manager.add_role({ name: :company_manager, resource: Company.first }, Group.first)
+    manager.add_role({ name: :company_moderator, resource: Company.first }, Forum.first)
+    manager.add_role({ name: :company_moderator, resource: Company.first }, Group.first)
   end
+
+  let!(:role_class) { RolyPoly.class_mappings[:role][:klass] }
+  let!(:company) { Company.first }
 
   def assign_permissions
     manager_role = RolyPoly.class_mappings[:role][:klass].find_by_name('manager')

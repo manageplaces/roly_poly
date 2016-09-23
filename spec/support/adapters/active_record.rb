@@ -8,7 +8,6 @@ ActiveRecord::Base.extend RolyPoly
 load File.dirname(__FILE__) + '/../schema.rb'
 
 
-# Standard user, role and permission classes
 class User < ActiveRecord::Base
 end
 
@@ -49,4 +48,7 @@ end
 
 class Group < ActiveRecord::Base
   role_resource
+end
+
+class Company < ActiveRecord::Base
 end

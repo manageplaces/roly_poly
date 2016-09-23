@@ -31,8 +31,9 @@ module RolyPoly
       # role names are case sensitive. i.e. ADMIN
       # and admin are two different roles.
       #
-      def find_role_by_name(role_name)
-        mappings[:role][:klass].where(name: role_name).first
+      def find_role(role)
+        conditions, values = role_lookup_condition(role)
+        mappings[:role][:klass].where(conditions, *values).first
       end
 
       def has_existing_role?(user, resource = nil, role = nil)
@@ -146,7 +147,7 @@ module RolyPoly
         values = []
         args.each do |arg|
           if arg.is_a?(Hash)
-            c, b = build_query(arg[:name], arg[:resource], type)
+            c, b = build_query(arg[type == :role ? :role : :name], arg[:resource], type)
           elsif arg.is_a?(String) || arg.is_a?(Symbol)
             c, b = build_role_query(arg.to_s, nil, type)
           else
@@ -161,30 +162,93 @@ module RolyPoly
         [ conditions, values ]
       end
 
-      def build_query(name, resource = nil, type = :role)
-        name_table = mappings[type][:plural_relation_name]
-        user_role_table = mappings[:user_role][:plural_relation_name]
+      def build_query(role_or_permission, resource = nil, type = :role)
+        if type == :role
+          build_role_query(role_or_permission, resource)
+        else
+          build_permission_query(role_or_permission, resource)
+        end
+      end
 
-        return [ "#{name_table}.name = ?", [name] ] if resource == :any
+      def build_role_query(role, resource)
+        roles_table = mappings[:role][:plural_relation_name]
+        return role_lookup_condition(role) if resource == :any
 
-        query = "((#{name_table}.name = ?) AND (#{user_role_table}.resource_type IS NULL) AND (#{user_role_table}.resource_id IS NULL))"
-        values = [ name ]
+        conditions, values = query_conditions(*role_lookup_condition(role), resource)
+      end
+
+      def build_permission_query(permission, resource)
+        permissions_table = mappings[:permission][:plural_relation_name]
+        return permission_lookup_condition(permission) if resource == :any
+
+        conditions, values = query_conditions(*permission_lookup_condition(permission), resource)
+      end
+
+      def role_lookup_condition(role)
+        roles_table = mappings[:role][:plural_relation_name]
+
+        if role.is_a?(Symbol) || role.is_a?(String)
+          [ "(#{roles_table}.name = ? AND #{roles_table}.resource_type IS NULL AND #{roles_table}.resource_id IS NULL)", [ role ] ]
+        elsif role.is_a?(Hash)
+          [ "(#{roles_table}.name = ? AND #{roles_table}.resource_type = ? AND #{roles_table}.resource_id = ?)", [ role[:name], role[:resource].class.name, role[:resource].id ]]
+        elsif role.is_a?(mappings[:role][:klass])
+          [ "(#{roles_table}.id = ?)", [ role.id ]]
+        else
+          raise ArgumentError, 'Invalid argument type: only hashes, string, symbols, and role instances are allowed'
+        end
+      end
+
+      def permission_lookup_condition(permission)
+        ["(#{mappings[:permission][:plural_relation_name]}.name = ?)", [permission]]
+      end
+
+      def query_conditions(conditions, values, resource)
+        user_roles_table = mappings[:user_role][:plural_relation_name]
+        condition_values = values
+
+        query = "(#{conditions} AND (#{user_roles_table}.resource_type IS NULL) AND (#{user_roles_table}.resource_id IS NULL))"
 
         if resource
-          query.insert(0, '(')
-          query += " OR ((#{name_table}.name = ?) AND (#{user_role_table}.resource_type = ?) AND (#{user_role_table}.resource_id IS NULL))"
-          values << name << ( resource.is_a?(Class) ? resource.to_s : resource.class.name )
+          query += " OR (#{conditions} AND (#{user_roles_table}.resource_type = ?) AND (#{user_roles_table}.resource_id IS NULL))"
+          values += condition_values
+          values << (resource.is_a?(Class) ? resource.to_s : resource.class.name)
 
           if !resource.is_a?(Class)
-            query += " OR ((#{name_table}.name = ?) AND (#{user_role_table}.resource_type = ?) AND (#{user_role_table}.resource_id = ?))"
-            values << name << resource.class.name << resource.id
+            query += " OR (#{conditions} AND (#{user_roles_table}.resource_type = ?) AND (#{user_roles_table}.resource_id = ?))"
+            values += condition_values
+            values << resource.class.name << resource.id
           end
 
-          query += ')'
+          query = "(#{query})"
         end
 
         [query, values]
       end
+
+      # def test
+      #   name_table = mappings[type][:plural_relation_name]
+      #   user_role_table = mappings[:user_role][:plural_relation_name]
+      #
+      #   return [ "#{name_table}.name = ?", [name] ] if resource == :any
+      #
+      #   query = "((#{name_table}.name = ?) AND (#{user_role_table}.resource_type IS NULL) AND (#{user_role_table}.resource_id IS NULL))"
+      #   values = [ name ]
+      #
+      #   if resource
+      #     query.insert(0, '(')
+      #     query += " OR ((#{name_table}.name = ?) AND (#{user_role_table}.resource_type = ?) AND (#{user_role_table}.resource_id IS NULL))"
+      #     values << name << ( resource.is_a?(Class) ? resource.to_s : resource.class.name )
+      #
+      #     if !resource.is_a?(Class)
+      #       query += " OR ((#{name_table}.name = ?) AND (#{user_role_table}.resource_type = ?) AND (#{user_role_table}.resource_id = ?))"
+      #       values << name << resource.class.name << resource.id
+      #     end
+      #
+      #     query += ')'
+      #   end
+      #
+      #   [query, values]
+      # end
 
     end
   end

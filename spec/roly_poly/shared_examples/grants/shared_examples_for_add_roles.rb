@@ -21,6 +21,19 @@ shared_examples_for '#add_role_examples' do |param_type, param_method|
 
     context 'when role does exist' do
 
+      context 'when the role is scoped to a company', scope: :unrestricted do
+        it 'should raise an exception if company not specified' do
+          expect { subject.add_role 'company_teammember'.send(param_method) }.to raise_error(RolyPoly::Errors::NoRoleExistsError)
+        end
+
+        it 'should assign the global role if company specified' do
+          expect { subject.add_role({ name: 'company_teammember'.send(param_method), resource: Company.first }) }.to change { subject.roles.count }.by(1)
+        end
+
+        it 'should assign the global role if role instance specified' do
+          expect { subject.add_role role_class.find_by_name('company_teammember') }.to change { subject.roles.count }.by(1)
+        end
+      end
 
       context 'global role', scope: :unrestricted do
         it 'should assign the global role' do

@@ -14,18 +14,19 @@ module RolyPoly
     # - grant_role
     # - assign_role
     #
-    def add_role(role_name, resource = nil)
-      role = self.adapter.find_role_by_name(role_name.to_s)
-      if role.nil?
-        add_role_failure(role_name, resource, :role_not_found)
+    def add_role(role, resource = nil)
+      to_add = self.adapter.find_role(role)
+
+      if to_add.nil?
+        add_role_failure(role, resource, :role_not_found)
       else
         case RolyPoly.role_exclusivity
           when :one_per_user
-            add_one_per_user_role(role, resource)
+            add_one_per_user_role(to_add, resource)
           when :one_per_resource
-            add_one_per_resource_role(role, resource)
+            add_one_per_resource_role(to_add, resource)
           when :unrestricted
-            add_unrestricted_role(role, resource)
+            add_unrestricted_role(to_add, resource)
         end
       end
     end
@@ -39,8 +40,8 @@ module RolyPoly
     #
     # This method also has the alias `is_assigned_role?`
     #
-    def has_role?(role_name, resource = nil)
-      self.adapter.role_scope(self.class.where(id: self.id), name: role_name, resource: resource).any?
+    def has_role?(role, resource = nil)
+      self.adapter.role_scope(self.class.where(id: self.id), role: role, resource: resource).any?
     end
     alias_method :is_assigned_role?, :has_role?
 
@@ -56,10 +57,10 @@ module RolyPoly
     # Removes the specified role scoped to the specified
     # resource if it exists.
     #
-    def remove_role(role_name, resource = nil)
-      role = self.adapter.find_role_by_name(role_name.to_s)
+    def remove_role(role, resource = nil)
+      to_remove = self.adapter.find_role(role)
       unless role.nil?
-        self.adapter.remove_role(self, role, resource)
+        self.adapter.remove_role(self, to_remove, resource)
       end
     end
     alias_method :revoke, :remove_role

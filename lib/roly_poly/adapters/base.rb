@@ -19,8 +19,8 @@ module RolyPoly
         raise NotImplementedError.new("You must implemented has_existing_role?")
       end
 
-      def find_role_by_name(role_name)
-        raise NotImplementedError.new("You must implemented find_role_by_name")
+      def find_role(role)
+        raise NotImplementedError.new("You must implemented find_role")
       end
 
       def remove_role(user, role, resource = nil)

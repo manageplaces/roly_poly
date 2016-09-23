@@ -13,26 +13,26 @@ describe RolyPoly::Adapters::RoleAdapter do
   context 'get user role' do
 
     context 'without role' do
-      subject { adapter.find_role_by_name(:role_name) }
+      subject { adapter.find_role(:role_name) }
       it { should eq(nil) }
     end
 
     context 'with a role' do
 
       context 'specify name as symbol' do
-        subject { adapter.find_role_by_name(:admin) }
+        subject { adapter.find_role(:admin) }
         it { should_not eq(nil) }
         it { should eq(admin_role) }
       end
 
       context 'specify name as string' do
-        subject { adapter.find_role_by_name('admin') }
+        subject { adapter.find_role('admin') }
         it { should_not eq(nil) }
         it { should eq(admin_role) }
       end
 
       context 'specify different case name' do
-        subject { adapter.find_role_by_name('ADMIN') }
+        subject { adapter.find_role('ADMIN') }
         it { should eq(nil) }
       end
 

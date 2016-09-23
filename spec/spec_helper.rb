@@ -23,6 +23,8 @@ end
 
 def load_data
   reset_config
+  Company.create(name: 'Company')
+
   RolyPoly.class_mappings[:role][:klass].create(name: 'admin')
   RolyPoly.class_mappings[:role][:klass].create(name: 'moderator')
   RolyPoly.class_mappings[:role][:klass].create(name: 'manager')
@@ -30,6 +32,14 @@ def load_data
   RolyPoly.class_mappings[:role][:klass].create(name: 'supervillain')
   RolyPoly.class_mappings[:role][:klass].create(name: 'god')
   RolyPoly.class_mappings[:role][:klass].create(name: 'teammember')
+
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_admin', resource: Company.first)
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_moderator', resource: Company.first)
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_manager', resource: Company.first)
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_superhero', resource: Company.first)
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_supervillain', resource: Company.first)
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_god', resource: Company.first)
+  RolyPoly.class_mappings[:role][:klass].create(name: 'company_teammember', resource: Company.first)
 
   RolyPoly.class_mappings[:permission][:klass].create(name: 'create_user')
   RolyPoly.class_mappings[:permission][:klass].create(name: 'update_user')
