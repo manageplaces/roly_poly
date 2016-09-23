@@ -2,7 +2,7 @@ module RolyPoly
   module Finders
     extend ActiveSupport::Concern
 
-    class_methods do
+    module ClassMethods
 
       def with_role(role, resource = nil)
         self.adapter.role_scope(self, { role: role, resource: resource })
