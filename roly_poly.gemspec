@@ -9,9 +9,13 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Adrian Hooper"]
   spec.email         = ["adrian@euphoricpanda.co.uk"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{A role management system with very fine-grained control over user roles}
+  spec.description   = %q{
+    RolyPoly allows users to be given very specific permissions within an app.
+    Both roles, and the role assignment can be scoped to a resource, allowing
+    for per-organisation roles to be defined.
+  }
+  spec.homepage      = "https://github.com/manageplaces/roly_poly"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
