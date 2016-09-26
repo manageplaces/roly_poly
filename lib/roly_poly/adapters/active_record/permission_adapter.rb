@@ -8,7 +8,7 @@ module RolyPoly
         permission = mappings[:permission][:klass].find_by_name(name)
         return false if permission.nil?
 
-        mappings[:role_permission][:klass].where("#{mappings[:role][:relation_name]}_id" => role.id, "#{mappings[:permission][:relation_name]}_id" => permission.id).first_or_create.nil?
+        mappings[:role_permission][:klass].where("#{mappings[:role][:relation_name]}_id" => role.id, "#{mappings[:permission][:relation_name]}_id" => permission.id).first_or_create
       end
 
       def remove_permission(role, name)
