@@ -10,7 +10,7 @@ include StreamHelpers
 ENV['ADAPTER'] ||= 'active_record'
 
 if ENV['ADAPTER'] == 'active_record'
-  load File.dirname(__FILE__) + '/support/adapters/utils/active_record.rb'
+  load File.dirname(__FILE__) + '/support/adapters/active_record.rb'
   require 'active_record/railtie'
   establish_connection
 else

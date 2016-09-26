@@ -62,7 +62,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "has_many :user_roles" }
       it { should contain "has_many :users, through: :user_roles" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
       it { should contain "validates :name, presence: true" }
     end
@@ -86,7 +86,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :role" }
       it { should contain "belongs_to :permission" }
       it { should contain "validates :role_id, uniqueness: { scope: :permission_id }"}
-      it { should contain "validates [:role, :permission], presence: true" }
+      it { should contain "validates :role, :permission, presence: true" }
     end
 
     describe 'app/models/user_role.rb' do
@@ -97,8 +97,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :user" }
       it { should contain "belongs_to :role" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
-      it { should contain "validates [:user, :role], presence: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
+      it { should contain "validates :user, :role, presence: true" }
       it { should contain "validates :user_id, uniqueness: { scope: [:role_id, :resource_type, :resource_id] }"}
     end
 
@@ -174,7 +174,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "has_many :user_new_roles" }
       it { should contain "has_many :users, through: :user_new_roles" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
       it { should contain "validates :name, presence: true" }
     end
@@ -198,7 +198,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :new_role" }
       it { should contain "belongs_to :permission" }
       it { should contain "validates :new_role_id, uniqueness: { scope: :permission_id }"}
-      it { should contain "validates [:new_role, :permission], presence: true" }
+      it { should contain "validates :new_role, :permission, presence: true" }
     end
 
     describe 'app/models/user_new_role.rb' do
@@ -209,8 +209,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :user" }
       it { should contain "belongs_to :new_role" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
-      it { should contain "validates [:user, :new_role], presence: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
+      it { should contain "validates :user, :new_role, presence: true" }
       it { should contain "validates :user_id, uniqueness: { scope: [:new_role_id, :resource_type, :resource_id] }"}
     end
 
@@ -273,7 +273,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "has_many :role_new_permissions" }
       it { should contain "has_many :new_permissions, through: :role_new_permissions" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
       it { should contain "validates :name, presence: true" }
     end
@@ -297,7 +297,7 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :role" }
       it { should contain "belongs_to :new_permission" }
       it { should contain "validates :role_id, uniqueness: { scope: :new_permission_id }"}
-      it { should contain "validates [:role, :new_permission], presence: true" }
+      it { should contain "validates :role, :new_permission, presence: true" }
     end
 
     describe 'new permission migration file' do
@@ -355,8 +355,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "belongs_to :admin_user" }
       it { should contain "belongs_to :role" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types }" }
-      it { should contain "validates [:admin_user, :role], presence: true" }
+      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
+      it { should contain "validates :admin_user, :role, presence: true" }
       it { should contain "validates :admin_user_id, uniqueness: { scope: [:role_id, :resource_type, :resource_id] }"}
     end
 

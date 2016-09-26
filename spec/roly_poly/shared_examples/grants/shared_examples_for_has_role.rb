@@ -118,51 +118,51 @@ shared_examples_for '#has_role?_examples' do |param_type, param_method|
         context 'global scoped' do
           it 'returns true for global role' do
             expect(subject.has_role?({ name: 'company_superhero'.send(param_method), resource: company })).to be_truthy
-            expect(subject.has_role?(role_class.where(name: 'company_superhero', resource: company).first)).to be_truthy
+            expect(subject.has_role?(role_class.where(name: 'company_superhero', resource_id: company.id, resource_type: 'Company').first)).to be_truthy
           end
 
           it 'returns true for class role' do
             expect(subject.has_role?({ name: 'company_superhero'.send(param_method), resource: company }, Group)).to be_truthy
-            expect(subject.has_role?(role_class.where(name: 'company_superhero', resource: company).first, Group)).to be_truthy
+            expect(subject.has_role?(role_class.where(name: 'company_superhero', resource_id: company.id, resource_type: 'Company').first, Group)).to be_truthy
           end
 
           it 'returns true for instance role' do
             expect(subject.has_role?({ name: 'company_superhero'.send(param_method), resource: company }, Group.first)).to be_truthy
-            expect(subject.has_role?(role_class.where(name: 'company_superhero', resource: company).first, Group.first)).to be_truthy
+            expect(subject.has_role?(role_class.where(name: 'company_superhero', resource_id: company.id, resource_type: 'Company').first, Group.first)).to be_truthy
           end
         end
 
         context 'class scoped' do
           it 'returns false for global roles' do
             expect(subject.has_role?({ name: 'company_god'.send(param_method), resource: company })).to be_falsey
-            expect(subject.has_role?(role_class.where(name: 'company_god', resource: company).first)).to be_falsey
+            expect(subject.has_role?(role_class.where(name: 'company_god', resource_id: company.id, resource_type: 'Company').first)).to be_falsey
           end
 
           it 'returns true for class role' do
             expect(subject.has_role?({ name: 'company_god'.send(param_method), resource: company }, Group)).to be_truthy
-            expect(subject.has_role?(role_class.where(name: 'company_god', resource: company).first, Group)).to be_truthy
+            expect(subject.has_role?(role_class.where(name: 'company_god', resource_id: company.id, resource_type: 'Company').first, Group)).to be_truthy
           end
 
           it 'return true for instance roles' do
             expect(subject.has_role?({ name: 'company_god'.send(param_method), resource: company }, Group.first)).to be_truthy
-            expect(subject.has_role?(role_class.where(name: 'company_god', resource: company).first, Group.first)).to be_truthy
+            expect(subject.has_role?(role_class.where(name: 'company_god', resource_id: company.id, resource_type: 'Company').first, Group.first)).to be_truthy
           end
         end
 
         context 'instance scoped' do
           it 'returns false for global roles' do
             expect(subject.has_role?({ name: 'company_moderator'.send(param_method), resource: company })).to be_falsey
-            expect(subject.has_role?(role_class.where(name: 'company_moderator', resource: company).first)).to be_falsey
+            expect(subject.has_role?(role_class.where(name: 'company_moderator', resource_id: company.id, resource_type: 'Company').first)).to be_falsey
           end
 
           it 'returns false for class role' do
             expect(subject.has_role?({ name: 'company_moderator'.send(param_method), resource: company }, Group)).to be_falsey
-            expect(subject.has_role?(role_class.where(name: 'company_moderator', resource: company).first, Group)).to be_falsey
+            expect(subject.has_role?(role_class.where(name: 'company_moderator', resource_id: company.id, resource_type: 'Company').first, Group)).to be_falsey
           end
 
           it 'return true for instance roles' do
             expect(subject.has_role?({ name: 'company_moderator'.send(param_method), resource: company }, Group.first)).to be_truthy
-            expect(subject.has_role?(role_class.where(name: 'company_moderator', resource: company).first, Group.first)).to be_truthy
+            expect(subject.has_role?(role_class.where(name: 'company_moderator', resource_id: company.id, resource_type: 'Company').first, Group.first)).to be_truthy
           end
         end
 

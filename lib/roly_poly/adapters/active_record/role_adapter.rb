@@ -44,7 +44,7 @@ module RolyPoly
         elsif resource.nil?
           scope = scope.where(resource_id: nil, resource_type: nil)
         elsif resource != :any
-          scope = scope.where(resource: resource)
+          scope = scope.where(resource_type: resource.class.name, resource_id: resource.id)
         end
 
         unless role.nil?
@@ -56,13 +56,13 @@ module RolyPoly
 
       def remove_role(user, role, resource = nil)
         scope = mappings[:user_role][:klass].
-                  where(mappings[:user][:relation_name] => user).
-                  where(mappings[:role][:relation_name] => role)
+                  where("#{mappings[:user][:relation_name]}_id" => user.id).
+                  where("#{mappings[:role][:relation_name]}_id" => role.try(:id))
 
         if resource.is_a?(Class)
           scope = scope.where(resource_type: resource.to_s)
         elsif resource
-          scope = scope.where(resource: resource)
+          scope = scope.where(resource_type: resource.class.name, resource_id: resource.id)
         end
 
         scope.destroy_all
