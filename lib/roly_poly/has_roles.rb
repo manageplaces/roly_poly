@@ -28,6 +28,9 @@ module RolyPoly
       has_many "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym
       has_many "#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym
 
+      has_many "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym
+      has_many "#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym
+
       self.adapter = RolyPoly::Adapters::Base.create('role_adapter')
     end
 
