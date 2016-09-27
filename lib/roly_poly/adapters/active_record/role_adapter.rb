@@ -8,11 +8,16 @@ module RolyPoly
       #
       # Adds a role record to a user.
       #
-      def add(user, role, resource = nil)
+      def add(user, role_permission, resource = nil)
         opts = {
-          mappings[:user][:relation_name] => user,
-          mappings[:role][:relation_name] => role,
+          mappings[:user][:relation_name] => user
         }
+
+        if role_permission.is_a?(mappings[:role][:klass])
+          opts[mappings[:role][:relation_name]] = role_permission
+        elsif role_permission.is_a?(mappings[:permission][:klass])
+          opts[mappings[:permission][:relation_name]] = role_permission
+        end
 
         if resource.is_a?(Class)
           opts[:resource_type] = resource.to_s
@@ -21,7 +26,11 @@ module RolyPoly
           opts[:resource] = resource
         end
 
-        mappings[:user_role][:klass].create(opts)
+        if role_permission.is_a?(mappings[:role][:klass])
+          mappings[:user_role][:klass].create(opts)
+        elsif role_permission.is_a?(mappings[:permission][:klass])
+          mappings[:user_permission][:klass].create(opts)
+        end
       end
 
 
@@ -34,6 +43,11 @@ module RolyPoly
       def find_role(role)
         conditions, values = role_lookup_condition(role)
         mappings[:role][:klass].where(conditions, *values).first
+      end
+
+      def find_permission(permission)
+        conditions, values = permission_lookup_condition(permission)
+        mappings[:permission][:klass].where(conditions, *values).first
       end
 
       def has_existing_role?(user, resource = nil, role = nil)
@@ -49,6 +63,24 @@ module RolyPoly
 
         unless role.nil?
           scope = scope.where("#{mappings[:role][:relation_name]}_id".to_sym => role.id)
+        end
+
+        scope.count > 0
+      end
+
+      def has_existing_permission?(user, resource = nil, permission = nil)
+        scope = user.send(mappings[:user_permission][:plural_relation_name])
+
+        if resource.is_a?(Class)
+          scope = scope.where(resource_type: resource.to_s, resource_id: nil)
+        elsif resource.nil?
+          scope = scope.where(resource_type: nil, resource_id: nil)
+        elsif resource != :any
+          scope = scope.where(resource_type: resource.class.name, resource_id: resource.id)
+        end
+
+        unless permission.nil?
+          scope = scope.where("#{mappings[:permission][:relation_name]}_id".to_sym => permission.id)
         end
 
         scope.count > 0
@@ -104,12 +136,22 @@ module RolyPoly
       end
 
       def has_permission?(user, permission, resource = nil)
-        conditions, values = build_query_scope([{ name: permission, resource: resource }], :permission)
+        conditions, values = build_query_scope([{ name: permission, resource: resource }], :role_permission)
         scope = mappings[:permission][:klass].
                   joins(mappings[:role_permission][:plural_relation_name] => {
                     mappings[:role][:relation_name] => mappings[:user_role][:plural_relation_name]
                   }).
                   where(mappings[:user_role][:plural_relation_name] => { user_id: user.id }).
+                  where(conditions, *values)
+
+        return true if scope.count > 0
+
+        conditions, values = build_query_scope([{ name: permission, resource: resource }], :user_permission)
+        scope = mappings[:permission][:klass].
+                  joins(mappings[:user_permission][:plural_relation_name] => {
+                    mappings[:permission][:relation_name] => mappings[:user_permission][:plural_relation_name]
+                  }).
+                  where(mappings[:user_permission][:plural_relation_name] => { user_id: user.id }).
                   where(conditions, *values)
 
         scope.count > 0
@@ -164,24 +206,22 @@ module RolyPoly
 
       def build_query(role_or_permission, resource = nil, type = :role)
         if type == :role
-          build_role_query(role_or_permission, resource)
+          build_role_query(role_or_permission, resource, type)
         else
-          build_permission_query(role_or_permission, resource)
+          build_permission_query(role_or_permission, resource, type)
         end
       end
 
-      def build_role_query(role, resource)
-        roles_table = mappings[:role][:plural_relation_name]
+      def build_role_query(role, resource, type)
         return role_lookup_condition(role) if resource == :any
 
-        conditions, values = query_conditions(*role_lookup_condition(role), resource)
+        conditions, values = query_conditions(*role_lookup_condition(role), resource, type)
       end
 
-      def build_permission_query(permission, resource)
-        permissions_table = mappings[:permission][:plural_relation_name]
+      def build_permission_query(permission, resource, type)
         return permission_lookup_condition(permission) if resource == :any
 
-        conditions, values = query_conditions(*permission_lookup_condition(permission), resource)
+        conditions, values = query_conditions(*permission_lookup_condition(permission), resource, type)
       end
 
       def role_lookup_condition(role)
@@ -199,22 +239,30 @@ module RolyPoly
       end
 
       def permission_lookup_condition(permission)
-        ["(#{mappings[:permission][:plural_relation_name]}.name = ?)", [permission]]
+        permissions_table = mappings[:permission][:plural_relation_name]
+
+        if permission.is_a?(Symbol) || permission.is_a?(String)
+          ["(#{permissions_table}.name = ?)", [ permission ]]
+        elsif permission.is_a?(mappings[:permission][:klass])
+          ["(#{permissions_table}.id = ?)", [ permission.id ]]
+        else
+          raise ArgumentError, 'Invalid argument type: only string, symbols, and permission instances are allowed'
+        end
       end
 
-      def query_conditions(conditions, values, resource)
-        user_roles_table = mappings[:user_role][:plural_relation_name]
+      def query_conditions(conditions, values, resource, type = :role)
+        join_table = query_join_table(type)
         condition_values = values
 
-        query = "(#{conditions} AND (#{user_roles_table}.resource_type IS NULL) AND (#{user_roles_table}.resource_id IS NULL))"
+        query = "(#{conditions} AND (#{join_table}.resource_type IS NULL) AND (#{join_table}.resource_id IS NULL))"
 
         if resource
-          query += " OR (#{conditions} AND (#{user_roles_table}.resource_type = ?) AND (#{user_roles_table}.resource_id IS NULL))"
+          query += " OR (#{conditions} AND (#{join_table}.resource_type = ?) AND (#{join_table}.resource_id IS NULL))"
           values += condition_values
           values << (resource.is_a?(Class) ? resource.to_s : resource.class.name)
 
           if !resource.is_a?(Class)
-            query += " OR (#{conditions} AND (#{user_roles_table}.resource_type = ?) AND (#{user_roles_table}.resource_id = ?))"
+            query += " OR (#{conditions} AND (#{join_table}.resource_type = ?) AND (#{join_table}.resource_id = ?))"
             values += condition_values
             values << resource.class.name << resource.id
           end
@@ -223,6 +271,14 @@ module RolyPoly
         end
 
         [query, values]
+      end
+
+      def query_join_table(type = :role)
+        if type == :user_permission
+          mappings[:user_permission][:plural_relation_name]
+        else
+          mappings[:user_role][:plural_relation_name]
+        end
       end
 
       # def test

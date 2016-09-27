@@ -46,9 +46,44 @@ module RolyPoly
     alias_method :is_assigned_role?, :has_role?
 
 
+
+    #
+    # Adds a permission directly to the user
+    # rather than assigning through a role.
+    # This can be used to override a roles
+    # permission set on an individual resource
+    # basis.
+    #
+    # This method has multiple other aliases:
+    #
+    # - grant_permission
+    # - assign_permission
+    #
+    def add_permission(permission, resource = nil)
+      to_add = self.adapter.find_permission(permission)
+
+      if to_add.nil?
+        add_role_failure(permission, resource, :permission_not_found)
+      else
+        unless self.adapter.has_existing_permission?(self, resource, to_add)
+          self.adapter.add(self, to_add, resource)
+          permission
+        end
+      end
+    end
+    alias_method :grant_permission, :add_permission
+    alias_method :assign_permission, :add_permission
+
+    #
+    # Determines whether or not the user has the
+    # specified role for the specified resource.
+    #
+    # This method also has the alias `is_assigned_permission?`
+    #
     def has_permission?(permission_name, resource = nil)
       self.adapter.has_permission?(self, permission_name, resource)
     end
+    alias_method :is_assigned_permission?, :has_permission?
 
 
 
@@ -102,6 +137,7 @@ module RolyPoly
       end
     end
 
+
     #
     # Add a role to the user. There is no restriction
     # imposed on this method, except that it will not
@@ -113,7 +149,6 @@ module RolyPoly
         role
       end
     end
-
 
     def add_role_failure(role, resource = nil, reason)
       case RolyPoly.role_exclusivity_error

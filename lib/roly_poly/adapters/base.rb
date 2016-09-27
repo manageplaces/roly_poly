@@ -23,6 +23,10 @@ module RolyPoly
         raise NotImplementedError.new("You must implemented find_role")
       end
 
+      def find_permission(permission)
+        raise NotImplementedError.new("You must implemented find_permission")
+      end
+
       def remove_role(user, role, resource = nil)
         raise NotImplementedError.new("You must implemented remove_role")
       end
@@ -37,6 +41,10 @@ module RolyPoly
 
       def has_permission?(user, permission, resource = nil)
         raise NotImplementedError.new("You must implement has_permission?")
+      end
+
+      def has_existing_permission?(user, resource = nil, permission = nil)
+        raise NotImplementedError.new("You must implement has_existing_permission?")
       end
 
       def where(relation, *args)

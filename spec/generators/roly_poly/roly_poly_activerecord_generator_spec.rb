@@ -74,6 +74,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class Permission < ActiveRecord::Base" }
       it { should contain "has_many :role_permissions" }
       it { should contain "has_many :roles, through: :role_permissions" }
+      it { should contain "has_many :user_permissions" }
+      it { should contain "has_many :users, through: :user_permissions" }
       it { should contain "validates :name, uniqueness: true" }
       it { should contain "validates :name, presence: true" }
     end
@@ -206,6 +208,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class Permission < ActiveRecord::Base" }
       it { should contain "has_many :new_role_permissions" }
       it { should contain "has_many :new_roles, through: :new_role_permissions" }
+      it { should contain "has_many :user_permissions" }
+      it { should contain "has_many :users, through: :user_permissions" }
       it { should contain "validates :name, uniqueness: true" }
       it { should contain "validates :name, presence: true" }
     end
@@ -305,6 +309,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class NewPermission < ActiveRecord::Base" }
       it { should contain "has_many :role_new_permissions" }
       it { should contain "has_many :roles, through: :role_new_permissions" }
+      it { should contain "has_many :user_new_permissions" }
+      it { should contain "has_many :users, through: :user_new_permissions" }
       it { should contain "validates :name, uniqueness: true" }
       it { should contain "validates :name, presence: true" }
     end

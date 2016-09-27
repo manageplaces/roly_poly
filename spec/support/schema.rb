@@ -36,4 +36,12 @@ ActiveRecord::Schema.define do
     end
   end
 
+  [ :user_permissions ].each do |table|
+    create_table(table) do |t|
+      t.references :user
+      t.references :permission
+      t.references :resource, polymorphic: true
+    end
+  end
+
 end

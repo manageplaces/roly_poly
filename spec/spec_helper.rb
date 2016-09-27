@@ -44,6 +44,10 @@ def load_data
   RolyPoly.class_mappings[:permission][:klass].create(name: 'create_user')
   RolyPoly.class_mappings[:permission][:klass].create(name: 'update_user')
   RolyPoly.class_mappings[:permission][:klass].create(name: 'view_user')
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'user_permission_a')
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'user_permission_b')
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'user_permission_c')
+  RolyPoly.class_mappings[:permission][:klass].create(name: 'user_permission_d')
 
   Forum.create(name: 'forum 1')
   Forum.create(name: 'forum 2')

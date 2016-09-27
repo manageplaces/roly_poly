@@ -29,11 +29,19 @@ end
 class Permission < ActiveRecord::Base
   has_many :role_permissions
   has_many :roles, through: :role_permissions
+  has_many :user_permissions
+  has_many :users, through: :user_permissions
 end
 
 class UserRole < ActiveRecord::Base
   belongs_to :user
   belongs_to :role
+  belongs_to :resource, polymorphic: true
+end
+
+class UserPermission < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :permission
   belongs_to :resource, polymorphic: true
 end
 

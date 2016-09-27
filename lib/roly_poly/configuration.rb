@@ -90,6 +90,7 @@ module RolyPoly
       @@class_mappings[:permission] = mappings_for(@@permission_class_name)
       @@class_mappings[:user_role] = mappings_for("#{@@user_class_name}#{@@role_class_name}")
       @@class_mappings[:role_permission] = mappings_for("#{@@role_class_name}#{@@permission_class_name}")
+      @@class_mappings[:user_permission] = mappings_for("#{@@user_class_name}#{@@permission_class_name}")
     end
 
     def mappings_for(class_name)

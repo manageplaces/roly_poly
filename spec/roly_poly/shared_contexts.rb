@@ -74,6 +74,7 @@ shared_context 'instance scoped role', scope: :unrestricted do
   end
 
   let!(:role_class) { RolyPoly.class_mappings[:role][:klass] }
+  let!(:permission_class) { RolyPoly.class_mappings[:permission][:klass] }
   let!(:company) { Company.first }
 
   def assign_permissions

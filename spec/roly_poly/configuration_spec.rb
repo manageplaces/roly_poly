@@ -8,9 +8,11 @@ describe RolyPoly do
     class DiffRole; end
     class DiffUserRole; end
     class DiffPermission; end
+    class DiffUserPermission; end
     class DiffUserDiffRole; end
     class DiffRoleDiffPermission; end
     class DiffRolePermission; end
+    class DiffUserDiffPermission; end
   end
 
   describe :default_values do
@@ -207,6 +209,19 @@ describe RolyPoly do
         }
       end
 
+      context 'user permission class mapping' do
+        subject { RolyPoly.class_mappings[:user_permission] }
+
+        it { should_not eq(nil) }
+        it { should eq({
+              klass: UserPermission,
+              foreign_key: :user_permission_id,
+              relation_name: :user_permission,
+              plural_relation_name: :user_permissions
+            })
+        }
+      end
+
     end
 
     context 'custom classes' do
@@ -278,6 +293,19 @@ describe RolyPoly do
               foreign_key: :diff_role_diff_permission_id,
               relation_name: :diff_role_diff_permission,
               plural_relation_name: :diff_role_diff_permissions
+            })
+        }
+      end
+
+      context 'user permission class mapping' do
+        subject { RolyPoly.class_mappings[:user_permission] }
+
+        it { should_not eq(nil) }
+        it { should eq({
+              klass: DiffUserDiffPermission,
+              foreign_key: :diff_user_diff_permission_id,
+              relation_name: :diff_user_diff_permission,
+              plural_relation_name: :diff_user_diff_permissions
             })
         }
       end
