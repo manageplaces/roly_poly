@@ -6,14 +6,10 @@ describe RolyPoly do
   before(:all) do
     class DiffUser; end
     class DiffRole; end
-    class DiffUserRole; end
     class DiffPermission; end
-    class DiffUserPermission; end
-    class DiffUserDiffRole; end
     class DiffUserPrivilege; end
     class DiffRoleDiffPermission; end
     class DiffRolePermission; end
-    class DiffUserDiffPermission; end
   end
 
   describe :default_values do
