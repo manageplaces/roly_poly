@@ -28,18 +28,10 @@ ActiveRecord::Schema.define do
     end
   end
 
-  [ :user_roles ].each do |table|
+  [ :user_privileges ].each do |table|
     create_table(table) do |t|
       t.references :user
-      t.references :role
-      t.references :resource, polymorphic: true
-    end
-  end
-
-  [ :user_permissions ].each do |table|
-    create_table(table) do |t|
-      t.references :user
-      t.references :permission
+      t.references :privilege, polymorphic: true
       t.references :resource, polymorphic: true
     end
   end

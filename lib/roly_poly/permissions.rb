@@ -5,6 +5,8 @@ module RolyPoly
     included do
       class_attribute :adapter
       self.adapter = RolyPoly::Adapters::Base.create('permission_adapter')
+
+      has_many "#{RolyPoly.user_class_name.underscore}_privileges".to_sym, as: :privilege
     end
 
     def add_permission(permission_name)

@@ -11,7 +11,7 @@ shared_context 'global role', scope: :one_per_user do
   end
 
   def load_roles
-    RolyPoly.class_mappings[:user_role][:klass].destroy_all
+    RolyPoly.class_mappings[:user_privilege][:klass].destroy_all
     admin.add_role(:admin)
   end
 
@@ -31,7 +31,7 @@ shared_context 'class scoped role', scope: :one_per_resource do
   end
 
   def load_roles
-    RolyPoly.class_mappings[:user_role][:klass].destroy_all
+    RolyPoly.class_mappings[:user_privilege][:klass].destroy_all
     moderator.add_role(:admin)
     moderator.add_role(:manager, Group)
     moderator.add_role(:moderator, Forum.first)
@@ -55,7 +55,7 @@ shared_context 'instance scoped role', scope: :unrestricted do
   end
 
   def load_roles
-    RolyPoly.class_mappings[:user_role][:klass].destroy_all
+    RolyPoly.class_mappings[:user_privilege][:klass].destroy_all
     manager.add_role(:superhero)
     manager.add_role(:manager)
     manager.add_role(:god, Group)
@@ -94,7 +94,7 @@ shared_context 'class', scope: :class do
   subject { user_class }
 
   before(:all) {
-    RolyPoly.class_mappings[:user_role][:klass].destroy_all
+    RolyPoly.class_mappings[:user_privilege][:klass].destroy_all
   }
 
   def user_class

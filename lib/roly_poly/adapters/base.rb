@@ -15,8 +15,8 @@ module RolyPoly
         raise NotImplementedError.new("You must implemented add")
       end
 
-      def has_existing_role?(user, resource = nil, role = nil)
-        raise NotImplementedError.new("You must implemented has_existing_role?")
+      def has_existing_privilege?(user, resource = nil, role = nil)
+        raise NotImplementedError.new("You must implemented has_existing_privilege?")
       end
 
       def find_role(role)
@@ -49,10 +49,6 @@ module RolyPoly
 
       def where(relation, *args)
         raise NotImplementedError.new("You must implemented where")
-      end
-
-      def with_role(klass, role_name, resource = nil)
-        raise NotImplementedError.new("You must implemented with_role")
       end
     end
 

@@ -10,6 +10,7 @@ describe RolyPoly do
     class DiffPermission; end
     class DiffUserPermission; end
     class DiffUserDiffRole; end
+    class DiffUserPrivilege; end
     class DiffRoleDiffPermission; end
     class DiffRolePermission; end
     class DiffUserDiffPermission; end
@@ -183,19 +184,6 @@ describe RolyPoly do
         }
       end
 
-      context 'user role class mapping' do
-        subject { RolyPoly.class_mappings[:user_role] }
-
-        it { should_not eq(nil) }
-        it { should eq({
-              klass: UserRole,
-              foreign_key: :user_role_id,
-              relation_name: :user_role,
-              plural_relation_name: :user_roles
-            })
-        }
-      end
-
       context 'role permission class mapping' do
         subject { RolyPoly.class_mappings[:role_permission] }
 
@@ -209,15 +197,15 @@ describe RolyPoly do
         }
       end
 
-      context 'user permission class mapping' do
-        subject { RolyPoly.class_mappings[:user_permission] }
+      context 'user privilege class mapping' do
+        subject { RolyPoly.class_mappings[:user_privilege] }
 
         it { should_not eq(nil) }
         it { should eq({
-              klass: UserPermission,
-              foreign_key: :user_permission_id,
-              relation_name: :user_permission,
-              plural_relation_name: :user_permissions
+              klass: UserPrivilege,
+              foreign_key: :user_privilege_id,
+              relation_name: :user_privilege,
+              plural_relation_name: :user_privileges
             })
         }
       end
@@ -271,19 +259,6 @@ describe RolyPoly do
         }
       end
 
-      context 'user role class mapping' do
-        subject { RolyPoly.class_mappings[:user_role] }
-
-        it { should_not eq(nil) }
-        it { should eq({
-              klass: DiffUserDiffRole,
-              foreign_key: :diff_user_diff_role_id,
-              relation_name: :diff_user_diff_role,
-              plural_relation_name: :diff_user_diff_roles
-            })
-        }
-      end
-
       context 'role permission class mapping' do
         subject { RolyPoly.class_mappings[:role_permission] }
 
@@ -297,15 +272,15 @@ describe RolyPoly do
         }
       end
 
-      context 'user permission class mapping' do
-        subject { RolyPoly.class_mappings[:user_permission] }
+      context 'user privilege class mapping' do
+        subject { RolyPoly.class_mappings[:user_privilege] }
 
         it { should_not eq(nil) }
         it { should eq({
-              klass: DiffUserDiffPermission,
-              foreign_key: :diff_user_diff_permission_id,
-              relation_name: :diff_user_diff_permission,
-              plural_relation_name: :diff_user_diff_permissions
+              klass: DiffUserPrivilege,
+              foreign_key: :diff_user_privilege_id,
+              relation_name: :diff_user_privilege,
+              plural_relation_name: :diff_user_privileges
             })
         }
       end

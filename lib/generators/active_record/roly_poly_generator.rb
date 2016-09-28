@@ -30,20 +30,15 @@ module ActiveRecord
         template 'role_permission.rb', role_permission_model_path
       end
 
-      def generate_user_role_model
-        template 'user_role.rb', user_role_model_path
-      end
-
-      def generate_user_permission_model
-        template 'user_permission.rb', user_permission_model_path
+      def generate_user_privilege_model
+        template 'user_privilege.rb', user_privilege_model_path
       end
 
       def create_roly_poly_migrations
         migration_template 'role_migration.rb', "db/migrate/roly_poly_create_#{role_class.underscore.downcase.pluralize}.rb"
         migration_template 'permission_migration.rb', "db/migrate/roly_poly_create_#{permission_class.underscore.downcase.pluralize}.rb"
         migration_template 'role_permission_migration.rb', "db/migrate/roly_poly_create_#{role_permissions_association_name}.rb"
-        migration_template 'user_roles_migration.rb', "db/migrate/roly_poly_create_#{user_class.underscore.downcase}_#{role_class.underscore.downcase.pluralize}.rb"
-        migration_template 'user_permissions_migration.rb', "db/migrate/roly_poly_create_#{user_class.underscore}_#{permission_class.underscore.pluralize}.rb"
+        migration_template 'user_privileges_migration.rb', "db/migrate/roly_poly_create_#{user_class.underscore}_privileges.rb"
       end
 
 
@@ -65,12 +60,8 @@ module ActiveRecord
         File.join('app', 'models', "#{role_permissions_association_name.singularize}.rb")
       end
 
-      def user_role_model_path
-        File.join('app', 'models', "#{user_class.underscore.downcase}_#{role_class.underscore.downcase}.rb")
-      end
-
-      def user_permission_model_path
-        File.join('app', 'models', "#{user_class.underscore.downcase}_#{permission_class.underscore.downcase}.rb")
+      def user_privilege_model_path
+        File.join('app', 'models', "#{user_class.underscore.downcase}_privilege.rb")
       end
 
       # ################## #
@@ -89,12 +80,8 @@ module ActiveRecord
         role_class.camelize
       end
 
-      def user_role_class_name
-        "#{user_class.camelize}#{role_class.camelize}"
-      end
-
-      def user_permission_class_name
-        "#{user_class.camelize}#{permission_class.camelize}"
+      def user_privilege_class_name
+        "#{user_class.camelize}Privilege"
       end
 
       # ############ #
@@ -113,16 +100,12 @@ module ActiveRecord
         permission_class.underscore.downcase.pluralize
       end
 
-      def user_roles_association_name
-        "#{user_class.underscore.downcase.singularize}_#{roles_association_name}"
-      end
-
       def users_association_name
         user_class.underscore.pluralize
       end
 
-      def user_permissions_association_name
-        "#{user_class.underscore}_#{permissions_association_name}"
+      def user_privileges_association_name
+        "#{user_class.underscore}_privileges"
       end
 
 
@@ -142,12 +125,8 @@ module ActiveRecord
         role_permissions_association_name
       end
 
-      def user_roles_table_name
-        user_roles_association_name
-      end
-
-      def user_permissions_table_name
-        user_permissions_association_name
+      def user_privileges_table_name
+        user_privileges_association_name
       end
 
     end

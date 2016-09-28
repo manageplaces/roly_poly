@@ -65,7 +65,7 @@ module RolyPoly
       if to_add.nil?
         add_role_failure(permission, resource, :permission_not_found)
       else
-        unless self.adapter.has_existing_permission?(self, resource, to_add)
+        unless self.adapter.has_existing_privilege?(self, resource, to_add)
           self.adapter.add(self, to_add, resource)
           permission
         end
@@ -94,7 +94,7 @@ module RolyPoly
     #
     def remove_role(role, resource = nil)
       to_remove = self.adapter.find_role(role)
-      unless role.nil?
+      unless to_remove.nil?
         self.adapter.remove_role(self, to_remove, resource)
       end
     end
@@ -125,7 +125,7 @@ module RolyPoly
     # but only one per resource.
     #
     def add_one_per_resource_role(role, resource = nil)
-      if self.adapter.has_existing_role?(self, resource)
+      if self.adapter.has_existing_privilege?(self, resource)
         if RolyPoly.role_exclusivity_error == :replace
           replace_role(role, resource)
         else
@@ -144,7 +144,7 @@ module RolyPoly
     # add the same role multiple times.
     #
     def add_unrestricted_role(role, resource = nil)
-      unless self.adapter.has_existing_role?(self, resource, role)
+      unless self.adapter.has_existing_privilege?(self, resource, role)
         self.adapter.add(self, role, resource)
         role
       end

@@ -44,8 +44,8 @@ describe RolyPoly::Adapters::RoleAdapter do
     let(:user) { User.create(name: 'Admin user') }
     let(:role) { Role.create(name: 'admin') }
 
-    it 'should create a user_role in the user_roles table' do
-      expect { adapter.add(user, role) }.to change { UserRole.count }.by(1)
+    it 'should create a user_privilege in the user_privileges table' do
+      expect { adapter.add(user, role) }.to change { UserPrivilege.count }.by(1)
     end
 
   end

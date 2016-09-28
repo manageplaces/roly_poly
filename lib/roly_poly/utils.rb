@@ -58,9 +58,5 @@ module RolyPoly
       RolyPoly.role_class_name.constantize.table_name
     end
 
-    def self.user_roles_model
-      "#{RolyPoly.user_class_name}#{RolyPoly.role_class_name}".constantize
-    end
-
   end
 end

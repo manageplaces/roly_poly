@@ -59,8 +59,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class Role < ActiveRecord::Base" }
       it { should contain "has_many :role_permissions" }
       it { should contain "has_many :permissions, through: :role_permissions" }
-      it { should contain "has_many :user_roles" }
-      it { should contain "has_many :users, through: :user_roles" }
+      it { should contain "has_many :user_privileges, as: :privilege" }
+      it { should contain "has_many :users, through: :user_privileges" }
       it { should contain "belongs_to :resource, polymorphic: true" }
       it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
       it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
@@ -74,8 +74,8 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class Permission < ActiveRecord::Base" }
       it { should contain "has_many :role_permissions" }
       it { should contain "has_many :roles, through: :role_permissions" }
-      it { should contain "has_many :user_permissions" }
-      it { should contain "has_many :users, through: :user_permissions" }
+      it { should contain "has_many :user_privileges, as: :privilege" }
+      it { should contain "has_many :users, through: :user_privileges" }
       it { should contain "validates :name, uniqueness: true" }
       it { should contain "validates :name, presence: true" }
     end
@@ -91,30 +91,18 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "validates :role, :permission, presence: true" }
     end
 
-    describe 'app/models/user_role.rb' do
-      subject { file('app/models/user_role.rb') }
+    describe 'app/models/user_privilege.rb' do
+      subject { file('app/models/user_privilege.rb') }
 
       it { should exist }
-      it { should contain "class UserRole < ActiveRecord::Base" }
+      it { should contain "class UserPrivilege < ActiveRecord::Base" }
       it { should contain "belongs_to :user" }
-      it { should contain "belongs_to :role" }
+      it { should contain "belongs_to :privilege, polymorphic: true" }
       it { should contain "belongs_to :resource, polymorphic: true" }
       it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :user, :role, presence: true" }
-      it { should contain "validates :user_id, uniqueness: { scope: [:role_id, :resource_type, :resource_id] }"}
-    end
-
-    describe 'app/models/user_permission.rb' do
-      subject { file('app/models/user_permission.rb') }
-
-      it { should exist }
-      it { should contain "class UserPermission < ActiveRecord::Base" }
-      it { should contain "belongs_to :user" }
-      it { should contain "belongs_to :permission" }
-      it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :user, :permission, presence: true" }
-      it { should contain "validates :user_id, uniqueness: { scope: [:permission_id, :resource_type, :resource_id] }"}
+      it { should contain "validates :privilege_type, inclusion: { in: [ Role, Permission ]" }
+      it { should contain "validates :user, :privilege, presence: true" }
+      it { should contain "validates :user_id, uniqueness: { scope: [:privilege_type, :privilege_id, :resource_type, :resource_id] }"}
     end
 
 
@@ -139,18 +127,11 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "create_table(:role_permissions) do" }
     end
 
-    describe 'user role migration file' do
-      subject { migration_file('db/migrate/roly_poly_create_user_roles.rb') }
-
-      it { should exist }
-      it { should contain "create_table(:user_roles) do" }
-    end
-
     describe 'user permission migration file' do
-      subject { migration_file('db/migrate/roly_poly_create_user_permissions.rb') }
+      subject { migration_file('db/migrate/roly_poly_create_user_privileges.rb') }
 
       it { should exist }
-      it { should contain "create_table(:user_permissions) do" }
+      it { should contain "create_table(:user_privileges) do" }
     end
 
   end
@@ -180,10 +161,9 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       subject { file('config/initializers/roly_poly.rb') }
 
       it { should exist }
-      it { should contain 'RolyPoly.configure do |config|'}
       it { should contain "config.role_class_name = 'NewRole'" }
-      it { should contain "# config.user_class_name = 'User'" }
-      it { should contain "# config.permission_class_name = 'Permission'" }
+      it { should_not contain "# config.role_class_name = 'Role'"}
+      it { should_not contain "# config.role_class_name = 'NewRole'"}
     end
 
     describe 'app/models/new_role.rb' do
@@ -193,25 +173,14 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class NewRole < ActiveRecord::Base" }
       it { should contain "has_many :new_role_permissions" }
       it { should contain "has_many :permissions, through: :new_role_permissions" }
-      it { should contain "has_many :user_new_roles" }
-      it { should contain "has_many :users, through: :user_new_roles" }
-      it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
-      it { should contain "validates :name, presence: true" }
     end
 
     describe 'app/models/permission.rb' do
       subject { file('app/models/permission.rb') }
 
       it { should exist }
-      it { should contain "class Permission < ActiveRecord::Base" }
       it { should contain "has_many :new_role_permissions" }
       it { should contain "has_many :new_roles, through: :new_role_permissions" }
-      it { should contain "has_many :user_permissions" }
-      it { should contain "has_many :users, through: :user_permissions" }
-      it { should contain "validates :name, uniqueness: true" }
-      it { should contain "validates :name, presence: true" }
     end
 
     describe 'app/models/new_role_permission.rb' do
@@ -220,22 +189,15 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should exist }
       it { should contain "class NewRolePermission < ActiveRecord::Base" }
       it { should contain "belongs_to :new_role" }
-      it { should contain "belongs_to :permission" }
       it { should contain "validates :new_role_id, uniqueness: { scope: :permission_id }"}
       it { should contain "validates :new_role, :permission, presence: true" }
     end
 
-    describe 'app/models/user_new_role.rb' do
-      subject { file('app/models/user_new_role.rb') }
+    describe 'app/models/user_privilege.rb' do
+      subject { file('app/models/user_privilege.rb') }
 
       it { should exist }
-      it { should contain "class UserNewRole < ActiveRecord::Base" }
-      it { should contain "belongs_to :user" }
-      it { should contain "belongs_to :new_role" }
-      it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :user, :new_role, presence: true" }
-      it { should contain "validates :user_id, uniqueness: { scope: [:new_role_id, :resource_type, :resource_id] }"}
+      it { should contain "validates :privilege_type, inclusion: { in: [ NewRole, Permission ]" }
     end
 
     describe 'new role migration file' do
@@ -250,13 +212,6 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
 
       it { should exist }
       it { should contain "create_table(:new_role_permissions) do" }
-    end
-
-    describe 'user new role migration file' do
-      subject { migration_file('db/migrate/roly_poly_create_user_new_roles.rb') }
-
-      it { should exist }
-      it { should contain "create_table(:user_new_roles) do" }
     end
   end
 
@@ -283,23 +238,17 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       subject { file('config/initializers/roly_poly.rb') }
 
       it { should exist }
-      it { should contain 'RolyPoly.configure do |config|'}
-      it { should contain "# config.role_class_name = 'Role'" }
-      it { should contain "# config.user_class_name = 'User'" }
       it { should contain "config.permission_class_name = 'NewPermission'" }
+      it { should_not contain "# config.permission_class_name = 'Permission'" }
+      it { should_not contain "# config.permission_class_name = 'NewPermission'" }
     end
 
     describe 'app/models/role.rb' do
       subject { file('app/models/role.rb') }
 
       it { should exist }
-      it { should contain "class Role < ActiveRecord::Base" }
       it { should contain "has_many :role_new_permissions" }
       it { should contain "has_many :new_permissions, through: :role_new_permissions" }
-      it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :name, uniqueness: { scope: [:resource_type, :resource_id] }" }
-      it { should contain "validates :name, presence: true" }
     end
 
     describe 'app/models/new_permission.rb' do
@@ -309,10 +258,6 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain "class NewPermission < ActiveRecord::Base" }
       it { should contain "has_many :role_new_permissions" }
       it { should contain "has_many :roles, through: :role_new_permissions" }
-      it { should contain "has_many :user_new_permissions" }
-      it { should contain "has_many :users, through: :user_new_permissions" }
-      it { should contain "validates :name, uniqueness: true" }
-      it { should contain "validates :name, presence: true" }
     end
 
     describe 'app/models/role_new_permission.rb' do
@@ -320,23 +265,15 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
 
       it { should exist }
       it { should contain "class RoleNewPermission < ActiveRecord::Base" }
-      it { should contain "belongs_to :role" }
       it { should contain "belongs_to :new_permission" }
-      it { should contain "validates :role_id, uniqueness: { scope: :new_permission_id }"}
       it { should contain "validates :role, :new_permission, presence: true" }
     end
 
-    describe 'app/models/user_new_permission.rb' do
-      subject { file('app/models/user_new_permission.rb') }
+    describe 'app/models/user_privilege.rb' do
+      subject { file('app/models/user_privilege.rb') }
 
       it { should exist }
-      it { should contain "class UserNewPermission < ActiveRecord::Base" }
-      it { should contain "belongs_to :user" }
-      it { should contain "belongs_to :new_permission" }
-      it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :user, :new_permission, presence: true" }
-      it { should contain "validates :user_id, uniqueness: { scope: [:new_permission_id, :resource_type, :resource_id] }"}
+      it { should contain "validates :privilege_type, inclusion: { in: [ Role, NewPermission ]" }
     end
 
     describe 'new permission migration file' do
@@ -351,13 +288,6 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
 
       it { should exist }
       it { should contain "create_table(:role_new_permissions) do" }
-    end
-
-    describe 'user new permission migration file' do
-      subject { migration_file('db/migrate/roly_poly_create_user_new_permissions.rb') }
-
-      it { should exist }
-      it { should contain "create_table(:user_new_permissions) do" }
     end
   end
 
@@ -381,10 +311,9 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       subject { file('config/initializers/roly_poly.rb') }
 
       it { should exist }
-      it { should contain 'RolyPoly.configure do |config|'}
-      it { should contain "# config.role_class_name = 'Role'" }
       it { should contain "config.user_class_name = 'AdminUser'" }
-      it { should contain "# config.permission_class_name = 'Permission'" }
+      it { should_not contain "# config.user_class_name = 'User'" }
+      it { should_not contain "# config.user_class_name = 'AdminUser'" }
     end
 
     describe 'app/models/admin_user.rb' do
@@ -393,44 +322,24 @@ describe RolyPoly::Generators::RolyPolyGenerator, type: :generator do
       it { should contain /class AdminUser < ActiveRecord::Base\n  has_roles\n/ }
     end
 
-    describe 'app/models/admin_user_role.rb' do
-      subject { file('app/models/admin_user_role.rb') }
+    describe 'app/models/admin_user_privilege.rb' do
+      subject { file('app/models/admin_user_privilege.rb') }
 
       it { should exist }
-      it { should contain "class AdminUserRole < ActiveRecord::Base" }
+      it { should contain "class AdminUserPrivilege < ActiveRecord::Base" }
       it { should contain "belongs_to :admin_user" }
-      it { should contain "belongs_to :role" }
+      it { should contain "belongs_to :privilege, polymorphic: true" }
       it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :admin_user, :role, presence: true" }
-      it { should contain "validates :admin_user_id, uniqueness: { scope: [:role_id, :resource_type, :resource_id] }"}
+      it { should contain "validates :admin_user, :privilege, presence: true" }
+      it { should contain "validates :admin_user_id, uniqueness: { scope: [:privilege_type, :privilege_id, :resource_type, :resource_id] }"}
     end
 
-    describe 'app/models/admin_user_permission.rb' do
-      subject { file('app/models/admin_user_permission.rb') }
+
+    describe 'admin user privilege migration file' do
+      subject { migration_file('db/migrate/roly_poly_create_admin_user_privileges.rb') }
 
       it { should exist }
-      it { should contain "class AdminUserPermission < ActiveRecord::Base" }
-      it { should contain "belongs_to :admin_user" }
-      it { should contain "belongs_to :permission" }
-      it { should contain "belongs_to :resource, polymorphic: true" }
-      it { should contain "validates :resource_type, inclusion: { in: RolyPoly.role_resource_types, allow_nil: true }" }
-      it { should contain "validates :admin_user, :permission, presence: true" }
-      it { should contain "validates :admin_user_id, uniqueness: { scope: [:permission_id, :resource_type, :resource_id] }"}
-    end
-
-    describe 'admin user role migration file' do
-      subject { migration_file('db/migrate/roly_poly_create_admin_user_roles.rb') }
-
-      it { should exist }
-      it { should contain "create_table(:admin_user_roles) do" }
-    end
-
-    describe 'admin user permission migration file' do
-      subject { migration_file('db/migrate/roly_poly_create_admin_user_permissions.rb') }
-
-      it { should exist }
-      it { should contain "create_table(:admin_user_permissions) do" }
+      it { should contain "create_table(:admin_user_privileges) do" }
     end
 
   end

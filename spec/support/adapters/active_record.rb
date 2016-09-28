@@ -16,8 +16,8 @@ class Role < ActiveRecord::Base
 
   has_many :role_permissions
   has_many :permissions, through: :role_permissions
-  has_many :user_roles
-  has_many :users, through: :user_roles
+  has_many :user_privileges, as: :privilege
+  has_many :users, through: :user_privileges
   belongs_to :resource, polymorphic: true
 end
 
@@ -29,19 +29,13 @@ end
 class Permission < ActiveRecord::Base
   has_many :role_permissions
   has_many :roles, through: :role_permissions
-  has_many :user_permissions
-  has_many :users, through: :user_permissions
+  has_many :user_privileges, as: :privilege
+  has_many :users, through: :user_privileges
 end
 
-class UserRole < ActiveRecord::Base
+class UserPrivilege < ActiveRecord::Base
   belongs_to :user
-  belongs_to :role
-  belongs_to :resource, polymorphic: true
-end
-
-class UserPermission < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :permission
+  belongs_to :privilege, polymorphic: true
   belongs_to :resource, polymorphic: true
 end
 

@@ -25,11 +25,15 @@ module RolyPoly
 
       class_attribute :adapter
 
-      has_many "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym
-      has_many "#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym
+      has_many "#{RolyPoly.user_class_name.underscore}_privileges".to_sym
+      has_many "#{RolyPoly.role_class_name.underscore.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore}_privileges".to_sym, source: :privilege, source_type: "#{RolyPoly.role_class_name}"
+      has_many "#{RolyPoly.permission_class_name.underscore.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore}_privileges".to_sym, source: :privilege, source_type: "#{RolyPoly.permission_class_name}"
 
-      has_many "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym
-      has_many "#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym
+      # has_many "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym
+      # has_many "#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.role_class_name.underscore.downcase.pluralize}".to_sym
+
+      # has_many "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym
+      # has_many "#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym, through: "#{RolyPoly.user_class_name.underscore.downcase}_#{RolyPoly.permission_class_name.underscore.downcase.pluralize}".to_sym
 
       self.adapter = RolyPoly::Adapters::Base.create('role_adapter')
     end
