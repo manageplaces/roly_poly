@@ -53,6 +53,13 @@ module RolyPoly
     end
 
     class ResourceAdapterBase
+      def resources_find_by_permission(klass, permission, user = nil)
+        raise NotImplementedError.new("You must implemented resources_find_by_permission")
+      end
+
+      def resources_find_by_role(klass, role, user = nil)
+        raise NotImplementedError.new("You must implemented resources_find_by_role")
+      end
     end
 
     class PermissionAdapterBase
