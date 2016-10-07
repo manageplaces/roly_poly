@@ -19,8 +19,8 @@ module RolyPoly
                         #{mapping(:user)[:relation_name]}_privileges.privilege_id = ?"
 
         unless permission_roles.empty?
-          where_clause = "(#{where_clause} OR #{mapping(:user)[:relation_name]}_privileges.privilege_type = ? AND
-                                              #{mapping(:user)[:relation_name]}_privileges.privilege_id IN (?))"
+          where_clause = "((#{where_clause}) OR (#{mapping(:user)[:relation_name]}_privileges.privilege_type = ? AND
+                                              #{mapping(:user)[:relation_name]}_privileges.privilege_id IN (?)))"
           where_values << mapping(:role)[:klass].name << permission_roles
         end
 
