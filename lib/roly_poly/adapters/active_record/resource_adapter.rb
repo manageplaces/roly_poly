@@ -24,7 +24,6 @@ module RolyPoly
           where_values << mapping(:role)[:klass].name << permission_roles
         end
 
-        puts "WHERE #{where_clause}, #{where_values}"
         resources = klass.joins("#{mapping(:user)[:relation_name]}_privileges".to_sym).where(where_clause, *where_values)
 
         unless user.nil?
