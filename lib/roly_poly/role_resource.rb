@@ -12,11 +12,11 @@ module RolyPoly
     module ClassMethods
 
       def with_permission(permission, user = nil)
-        self.resource_adapter.resources_find_by_permission(self, permission)
+        self.adapter.resources_find_by_permission(self, permission)
       end
 
       def with_role(role, user = nil)
-        self.resource_adapter.resources_find_by_role(self, role)
+        self.adapter.resources_find_by_role(self, role)
       end
 
     end
