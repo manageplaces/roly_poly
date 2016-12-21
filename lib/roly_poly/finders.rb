@@ -14,7 +14,8 @@ module RolyPoly
       def with_any_role(*args)
       end
 
-      def with_permission(role, resource = nil)
+      def with_permission(permission, resource = nil)
+        self.adapter.permission_scope(self, { permission: permission, resource: resource })
       end
 
       def with_all_permissions(*args)

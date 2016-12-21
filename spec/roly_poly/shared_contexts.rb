@@ -95,13 +95,29 @@ shared_context 'class', scope: :class do
 
   before(:all) {
     RolyPoly.class_mappings[:user_privilege][:klass].destroy_all
+    assign_permissions
   }
 
   def user_class
     RolyPoly.class_mappings[:user][:klass]
   end
 
+  def assign_permissions
+    admin_role = RolyPoly.class_mappings[:role][:klass].find_by_name('admin')
+    moderator_role = RolyPoly.class_mappings[:role][:klass].find_by_name('moderator')
+    manager_role = RolyPoly.class_mappings[:role][:klass].find_by_name('manager')
+
+    admin_role.add_permission(:create_user)
+    manager_role.add_permission(:create_user)
+    manager_role.add_permission(:update_user)
+    moderator_role.add_permission(:update_user)
+  end
+
   let!(:admin) { provision_user(user_class.find_by_name('admin'), [ :admin, [ :moderator, Group ], [ :moderator, Forum ], [ :manager, Forum.first ], [ :teammember, Forum.last ] ]) }
-  let!(:moderator) { provision_user(user_class.find_by_name('moderator'), [ [ :moderator, Forum ], [ :manager, Group ], [ :moderator, Group.last ] ]) }
+  let!(:moderator) {
+    mod = provision_user(user_class.find_by_name('moderator'), [ [ :moderator, Forum ], [ :manager, Group ], [ :moderator, Group.last ] ])
+    mod.add_permission(:view_user, Group.last)
+    mod
+  }
   let!(:manager) { provision_user(user_class.find_by_name('manager'), [[ :moderator, Forum.first ]])}
 end

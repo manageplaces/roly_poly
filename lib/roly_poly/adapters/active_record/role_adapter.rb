@@ -135,6 +135,49 @@ module RolyPoly
           .uniq
       end
 
+      def permission_scope(relation, *args)
+        conditions, values = build_query_scope(args, :permission)
+        role_permission_scope = mappings[:permission][:klass]
+                                .joins(mappings[:role_permission][:plural_relation_name] => {
+                                  mappings[:role][:relation_name] => mappings[:user_privilege][:plural_relation_name]
+                                })
+                                .where(conditions, *values)
+
+        permission_scope = mappings[:permission][:klass]
+                            .joins(mappings[:user_privilege][:plural_relation_name])
+                            .where(conditions, *values)
+
+        privilege_conditions = "(#{mappings[:user_privilege][:plural_relation_name]}.privilege_type = ? AND #{mappings[:user_privilege][:plural_relation_name]}.privilege_id IN (?)) OR
+                      (#{mappings[:user_privilege][:plural_relation_name]}.privilege_type = ? AND #{mappings[:user_privilege][:plural_relation_name]}.privilege_id IN (?))"
+
+        privilege_values = [mappings[:permission][:klass].name, permission_scope.pluck("#{mappings[:permission][:plural_relation_name]}.id"),
+                  mappings[:role][:klass].name, role_permission_scope.pluck("#{mappings[:role][:plural_relation_name]}.id")]
+
+        conditions = []
+        values = []
+
+        args.each do |arg|
+          if arg.is_a?(Hash)
+            c, b = query_conditions(privilege_conditions, privilege_values, arg[:resource])
+          elsif arg.is_a?(String) || arg.is_a?(Symbol)
+            c, b = query_conditions(conditions, values, nil)
+          else
+            raise ArgumentError, 'Invalid argument type: only hashes, string and symbols are allowed'
+          end
+
+          conditions << c
+          values += b
+        end
+
+        conditions = conditions.join(' OR ')
+        testing = relation
+          .joins(mappings[:user_privilege][:plural_relation_name])
+          .where(conditions, *values)
+          .uniq
+
+        testing
+      end
+
 
       private
 

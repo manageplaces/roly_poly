@@ -61,6 +61,40 @@ shared_examples_for :finders do |param_name, param_method|
     describe '.with_any_role' do
     end
 
+    describe '.with_permission' do
+      it { should respond_to(:with_permission).with(1).arguments }
+      it { should respond_to(:with_permission).with(2).arguments }
+
+      context 'with a global role' do
+
+        it { subject.with_permission('create_user'.send(param_method)).should eq([ admin ]) }
+        it { subject.with_permission('update_user'.send(param_method)).should be_empty }
+
+      end
+
+      context 'with a class role' do
+
+        context 'on Group class' do
+          it { subject.with_permission('update_user'.send(param_method), Group).should include(admin, moderator) }
+        end
+
+      end
+
+      context 'with an instance role' do
+
+        context 'on Forum first instance' do
+          it { subject.with_permission('create_user'.send(param_method), Forum.first).should include(manager) }
+        end
+
+      end
+    end
+
+    describe '.with_all_permissions' do
+    end
+
+    describe '.with_any_permission' do
+    end
+
   end
 
 end
