@@ -79,3 +79,11 @@ RolyPoly.configure do |config|
   # config.role_exclusivity_error = :raise
 
 end
+
+# Reinitialize RolyPoly after the code is reloaded
+# Otherwise references to the old classes are kept which triggers random errors
+if Rails.env.test? || Rails.env.development?
+  ActionDispatch::Reloader.to_prepare do
+    load "#{Rails.root}/config/initializers/roly_poly.rb"
+  end
+end
