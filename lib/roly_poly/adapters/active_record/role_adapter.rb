@@ -96,7 +96,7 @@ module RolyPoly
         end
 
         scope
-          .uniq
+          .distinct
           .all
       end
 
@@ -132,7 +132,7 @@ module RolyPoly
           .joins(mappings[:role][:plural_relation_name])
           .joins(mappings[:user_privilege][:plural_relation_name])
           .where(conditions, *values)
-          .uniq
+          .distinct
       end
 
       def permission_scope(relation, *args)
@@ -173,7 +173,7 @@ module RolyPoly
         testing = relation
           .joins(mappings[:user_privilege][:plural_relation_name])
           .where(conditions, *values)
-          .uniq
+          .distinct
 
         testing
       end
