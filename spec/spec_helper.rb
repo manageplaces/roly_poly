@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler/setup'
 require 'roly_poly'
 require 'database_cleaner'
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-load File.dirname(__FILE__) + "/support/adapters/active_record.rb"
-load File.dirname(__FILE__) + "/support/data.rb"
+load File.dirname(__FILE__) + '/support/adapters/active_record.rb'
+load File.dirname(__FILE__) + '/support/data.rb'
 
 require 'shoulda/matchers'
 require 'shoulda/matchers/integrations/rspec'
@@ -73,7 +75,7 @@ def provision_user(user, roles)
 end
 
 RSpec.configure do |config|
-  config.expect_with(:rspec) { |c| c.syntax = [:should, :expect] }
+  config.expect_with(:rspec) { |c| c.syntax = %i[should expect] }
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
@@ -90,5 +92,4 @@ RSpec.configure do |config|
   config.after(:suite) do
     DatabaseCleaner.clean_with(:truncation)
   end
-
 end
